@@ -58,6 +58,3 @@ docket run -itd -rm --network ipvlan02 --ip 10.168.11.21 --name app app:v1.0
 <h3>Want to inspect what's running and state of your network</h3>
 docker inspect ipvlan02
 
-
-# Make sure you have static route on route for these networks.
-#
