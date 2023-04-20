@@ -1,0 +1,59 @@
+---
+- name: Ansible Playbook to Install and Setup tomcat9 on Ubuntu
+  hosts: tomcat-nodes
+  remote_user: root
+  become: "yes"             # If priv escalation required
+  become_method: sudo     # use sudo to esclate privs
+
+  tasks:
+    - name: Install latest version of tomcat9
+      apt: name=tomcat9 update_cache=yes state=latest
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Create document root for domain configured in host variable
+      file:
+        path: "/usr/share/tomcat9/webapps"
+        state: directory
+        owner: tomcat
+        group: tomcat
+        mode: '0755'
+
+    - name: Copy your webapps file
+      template:
+        src: "files/tomcat9/ROOT.war"
+        dest: "/var/lib/tomcat9/webapps/ROOT.war"
+        owner: tomcat
+        group: tomcat
+        mode: '0644'
+        notify: restart-tomcat
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Copy catalina.conf
+      template:
+        src: "files/conf/catalina.conf.servers1"
+        dest: "/etc/tomcat9/catalina.conf"
+        owner: root
+        group: root
+        mode: '0644'
+        notify: restart-tomcat
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Copy server.xml
+      template:
+        src: files/conf/server.xml.server1
+        dest: /etc/tomcat9/server.xml
+        owner: root
+        group: root
+        notify: restart-tomcat
+
+    - name: "UFW firewall allow HTTP on port {{ http_port }}"
+      ufw:
+        rule: allow
+        port: "{{ tomcat_port }}"
+        proto: tcp
+
+  handlers:
+    - name: restart-tomcat
+      service:
+        name: tomcat9
+        state: restarted

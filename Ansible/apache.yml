@@ -1,0 +1,49 @@
+---
+- name: Ansible Playbook to Install and Setup Apache on Ubuntu
+  hosts: myservers
+  remote_user: root
+  become: "yes"
+  tasks:
+    - name: Install latest version of Apache2
+      apt: name=apache2 update_cache=yes state=latest
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Create document root for domain configured in host variable
+      file:
+        path: "/var/www/{{ http_dir }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Copy your index file
+      template:
+        src: "files/apache/index.html"
+        dest: "/var/www/{{ http_dir }}/index.html"
+        owner: http
+        group: http
+        mode: '0644'
+
+    - name: Enable site
+      command: a2ensite {{ http_conf }}
+      notify: restart-apache
+
+    - name: Enable a module eg auth_basic
+      command: a2enmod auth_basic
+      notify: restart-httpd
+
+    - name: "UFW firewall allow HTTP on port {{ http_port }}"
+      ufw:
+        rule: allow
+        port: "{{ http_port }}"
+        proto: tcp
+
+  handlers:
+    - name: restart-apache
+      service:
+        name: apache2
+        state: restarted
+    - name: restart-httpd
+      service:
+        name: httpd
+        state: restarted
