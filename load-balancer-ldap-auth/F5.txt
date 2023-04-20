@@ -1,0 +1,41 @@
+#########################################################
+#
+##############   F5 integration for ldap auth ###########
+##############   Different version of F5 have ###########
+##############   different syntax, be careful ###########
+#                do not blindly copy paste
+#########################################################
+
+
+# version 11, 12
+tmsh modify /auth source type local
+# version 10
+tmsh modify /sys global-settings auth-source-type local
+ 
+tmsh modify /auth remote-role role-info delete { lbreadonly }
+tmsh modify /auth remote-role role-info delete { lbadmin }
+tmsh delete /auth ldap system-auth
+
+
+---- Local users  on F5 ----
+#!/bin/bash
+ 
+# If you have localusers please specify here
+LOCALUSERS=(CHANGE_ME)  # !!! CHANGE_ME !!!, for example, LOCALUSERS=(c3admin lbaas lbms webadmin)
+ 
+# Nothing to edit below this line
+target=/defaults/config/templates/localusers.tmpl
+mount -o remount -rw /usr
+[ ! -f ${target}.bak ] && cp ${target} ${target}.bak
+printf "admin\nroot\n" > ${target}
+for user in ${LOCALUSERS[@]}; do
+  grep -q < /etc/passwd ^${user} || continue
+  uid=$(id -u ${user})
+  gid=$(id -g ${user})
+  if [ "x${uid}" == "x0" ] || [ "x${gid}" == "x500" ]; then
+    echo ${user} >> ${target}
+  fi
+done
+mount -o remount -r /usr
+confpp unix_config_localusers
+echo done

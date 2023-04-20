@@ -1,0 +1,40 @@
+##########################################################################################
+#
+############   Citrix LDAP AUthentication  (This is not Active directory server) #########
+############   memberof attribute is available by using overlay schema           #########
+############   Different directory servers have different way to define then     #########
+############   https://tylersguides.com/guides/openldap-memberof-overlay/        #########
+#
+##########################################################################################
+
+
+# >= 10.5
+add system group lbadmin -promptString "%u@%h[%s] (ADMIN)"
+add system group lbreadonly -promptString "%u@%h[%s] (READONLY)" -timeout 900
+# == 9.3
+add system group lbadmin -promptString "%u@%h[%s] (ADMIN)"
+add system group lbreadonly -promptString "%u@%h[%s] (READONLY)"
+# < 9.3
+add system group lbadmin
+add system group lbreadonly
+ 
+ 
+# any version
+bind system group lbadmin -policyName superuser 100
+bind system group lbreadonly -policyName read-only 100
+  
+ 
+# >= 10.5
+add authentication ldapAction prod-ldap -serverName ldap.vip.example.com -serverPort 636 -ldapBase "dc=example,dc=com" -ldapBindDn "uid=proxyagent,ou=Special_Users,dc=example,dc=com" -ldapBindDnPassword xxxxxxx -ldapLoginName uid -searchFilter "|(memberOf=cn=lbadmin,ou=netgroup,ou=example.com,ou=services,dc=example,dc=com)(memberof=cn=lbreadonly,ou=netgroup,ou=example.com,ou=services,dc=example,dc=com)" -groupAttrName memberOf -subAttributeName cn -secType SSL
+# <= 9.3
+add authentication ldapAction prod-ldap -serverIP 10.xxxx  -serverPort 636 -ldapBase "dc=example,dc=com" -ldapBindDn "uid=proxyagent,ou=Special_Users,dc=example,dc=com" -ldapBindDnPassword xxxxxxx -ldapLoginName uid -searchFilter "|(memberOf=cn=lbadmin,ou=netgroup,ou=example.com,ou=services,dc=example,dc=com)(memberof=cn=lbreadonly,ou=netgroup,ou=example.com,ou=services,dc=example,dc=com)" -groupAttrName memberOf -subAttributeName cn -secType SSL
+ 
+ 
+# >= 12.0
+add authentication policy ldapPolicy -rule true -action prod-ldap
+# < 12.0
+add authentication ldapPolicy prod-ldap ns_true prod-ldap
+ 
+ 
+bind system global prod-ldap -priority 100
+save conf
