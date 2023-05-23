@@ -1,0 +1,6 @@
+---
+  - name: 1.6.1 Restrict core dumps (Scored) - via pam
+    lineinfile: >
+      dest=/etc/security/limits.conf
+      line="* hard core 0"
+      insertafter=EOF

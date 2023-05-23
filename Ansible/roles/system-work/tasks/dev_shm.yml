@@ -1,0 +1,8 @@
+---
+  - name: 1.1.14 - 1.1.16 Add noexec Option to /dev/shm Partition (Scored)
+    mount: >
+      name="/dev/shm"
+      src="none"
+      state=mounted
+      fstype="tmpfs"
+      opts="nodev,nosuid,noexec"

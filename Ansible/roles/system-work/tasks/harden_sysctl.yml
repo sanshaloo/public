@@ -1,0 +1,14 @@
+---
+  - name: set sysctl
+    sysctl:
+      name: "{{ iten.n }}"
+      value: "{{ item.v }}"
+      state: present
+      reload: true
+      ignoreerrors: true
+      sysctl_set: true
+    with_items:
+      - {n: 'net.ipv4.ip_forward', v: 0 }
+      - {n: 'vm.swappiness', v: 10}
+      - {n: 'kernel.exec-shield', v: 1}
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

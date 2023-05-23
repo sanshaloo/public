@@ -1,0 +1,10 @@
+---
+  - name: remove suid bits
+    file:
+      path: "{{ item }}"
+      owner: root
+      group: root
+      mode: 755
+    with_items:
+      - /bin/ping
+      - /bin/mount
