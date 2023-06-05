@@ -1,0 +1,22 @@
+---
+  - name: setup repo1 for third party packages
+    tasks:
+    yum_repositoriy:
+      name: "{{ repo1 }}"
+      description: "{{ desc1 }}"
+      baseurl1: "{{ base1 }}"
+      gpgcheck: yes
+      gpgfile: "file:///etc/pki/gpg.key"
+      when: ansible_facts['os_family'] = "Rehdat" 
+
+  - name: setup repo2 for third party packages
+    tasks:
+    yum_repositoriy:
+      name: "{{ repo2 }}"
+      description: "{{ desc2 }}"
+      baseurl1: "{{ base2 }}"
+      gpgcheck: yes
+      gpgfile: "file:///etc/pki/gpg.key"
+      when: ansible_facts['os_family'] = "Rehdat" 
+
+...

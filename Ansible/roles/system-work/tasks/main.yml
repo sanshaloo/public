@@ -3,9 +3,10 @@
 
 - import_tasks: install_apache.yml
 - import_tasks: harden_sysctl.yml
-- import_tasks: tmpfs.yml
+# - import_tasks: tmpfs.yml
 - import_tasks: nosuid.yml
 - import_tasks: dev_shm.yml
 - import_tasks: disable_core_dump.yml
 - import_tasks: rsyslog_conf.yml
 - import_tasks: nosuid.yml
+- import_tasks: lamp.yml

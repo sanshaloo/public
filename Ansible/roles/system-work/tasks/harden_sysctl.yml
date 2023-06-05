@@ -1,7 +1,7 @@
 ---
   - name: set sysctl
     sysctl:
-      name: "{{ iten.n }}"
+      name: "{{ item.n }}"
       value: "{{ item.v }}"
       state: present
       reload: true

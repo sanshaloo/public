@@ -1,4 +1,5 @@
 ---
-  - name: Install latest version of Apache2
-    apt: name=apache2 update_cache=yes state=latest
-    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- name: Install latest version of Apache2
+  apt: name=apache2 update_cache=yes state=latest
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+...

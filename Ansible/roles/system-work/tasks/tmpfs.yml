@@ -1,11 +1,10 @@
 ---
-
   - name: 1.1.2 - 1.1.4 Set nodev,nosuid,noexec option for /tmp Partition (Scored)
     mount: >
       name="/tmp"
-      src={{ item.device }}
+      src={{ device }}
       state=mounted
-      fstype={{ item.fstype }}
+      fstype={{ fstype }}
       opts="nodev,nosuid,noexec"
     when: item.mount == "/tmp"
     with_items: ansible_mounts

@@ -1,0 +1,17 @@
+---
+    - name: Install latest version of software
+      apt: 
+        name:
+        - apache2
+        - php7.2
+        - mysql-server-5.7
+        - mysql-client-5.7
+       
+    - name: ensure services are started and enabled
+      service: "{{ item }}"
+      state: started
+      enabled: true
+      with_items:
+      - apache2
+      - mysqld
+...
