@@ -1,0 +1,13 @@
+---
+# vars file for sysadmin
+
+repo1: rhel-t-stage
+desc1: RHEL packages for testing only
+base1: http://repo.example.com/rhel-t-stage
+repo2: custom-p-stage
+desc2: Custom packages for testing only
+base2: http://repo.example.com/custom-p-stag
+device: "/dev/sd1b"
+fstype: "tmpfs"
+rsyslog_host: "127.0.0.1"
+...

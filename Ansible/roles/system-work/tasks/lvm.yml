@@ -1,0 +1,24 @@
+---
+  - name: install required packages
+    apt: name=lvm2 update_cache=yes state=latest
+  - name: create  a volume group
+    lvg:
+      vg: data
+      pvs: /dev/sdb5, /dev/sdb6
+  - name: create a volume from vg
+    lvol:
+      vg: data
+      lv: data1
+      size: {{ size }}
+  - name: create filesystem
+    filesystem:
+      fstype: ext4
+      dev: /dev/data/data1
+  - name: mount the volume
+    mount:
+      name: /opt/data1
+      src: /dev/data/data1
+      fstype: ext4
+      state: mounted
+      opts: noatime,asyc
+...

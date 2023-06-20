@@ -1,0 +1,40 @@
+---
+# https://srcc.stanford.edu/100g-network-adapter-tuning
+  - name: set sysctl
+    sysctl:
+      name: "{{ item.n }}"
+      value: "{{ item.v }}"
+      state: present
+      reload: true
+      ignoreerrors: true
+      sysctl_set: true
+    with_items:
+      # Change the queue discipline to fq = 
+      - {n: 'net.core.default.qdisc', v: 'fq' }
+      # or set to BBR if using newer kernel
+      - {n: 'net.ipv4.tcp_congestion_control', v: 'htcp' }
+      # Allow Testing for upto 2GB memory
+      - {n: 'net.core.rmem_max', v: 2147483647 }
+      # Allow Testing for upto 2GB memory
+      - {n: 'net.core.wmem_max', v: 2147483647 }
+      # ALlow auto tuning to 2GB
+      - {n: 'net.ipv4.tcp_rmem' v: '4096 87380 2147483647' }
+      # ALlow auto tuning to 2GB
+      - {n: 'net.ipv4.tcp_wmem' v: '4096 65536 2147483647' }
+#
+# Other settings
+# systemctl start tuned
+# systemctl enable tuned
+# tuned-adm active
+# tuned-adm profile network-throughput
+# Firewall rules, allows iperf, iperf3 and fdt
+# firewall-cmd --zone=public --add-port=5201-5210/tcp --permanent
+# firewall-cmd --zone=public --add-port=5000-5010/tcp --permanent
+# firewall-cmd --zone=public --add-port=5101-5105/tcp --permanent
+# firewall-cmd --zone=public --add-port=54321/tcp --permanent
+# firewall-cmd --reload
+# systemctl stop irqbalance.service
+# systemctl disable irqbalance.service
+# systemctl stop wpa_supplicant
+# systemctl disable wpa_supplicant
+

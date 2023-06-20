@@ -32,4 +32,10 @@ RUN  chown www-data:www-data /var/www/html/index.html
 
 EXPOSE  80 443
 
+# We can override the parameters if required for debugging
+# There are not manu options for apacectl
 CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
+#
+# ENTRYPOINT: The comandline parameter cannot be overridden.
+#
+#ENTRYPOINT ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
