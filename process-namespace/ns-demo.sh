@@ -5,7 +5,7 @@
 #  Total idea == Create a process namespace, network namespae and use both of them together
 #  with a mounted filesystem for complete process isolation
 #  Why docker or containerd can't be used ::  Sure they can be 
-#
+#  https://www.youtube.com/watch?v=oJfiY3PGThs&t=42s
 #  It's more fun to do it this way
 
 echo '
